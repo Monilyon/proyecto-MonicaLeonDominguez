@@ -21,7 +21,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Inscripciones
     Route::post('/registrations', [RegistrationController::class, 'store']);
-    //nadie puede crear eventos, solo el admin a través del panel de administración, por lo que no es necesario proteger esta ruta con autenticación
+
     Route::post('/events', [EventController::class, 'store']);
 
 });

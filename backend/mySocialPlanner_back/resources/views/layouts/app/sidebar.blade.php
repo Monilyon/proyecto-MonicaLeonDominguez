@@ -1,99 +1,98 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
-    <head>
-        @include('partials.head')
-    </head>
-    <body class="min-h-screen bg-white dark:bg-zinc-800">
-        <flux:sidebar sticky collapsible="mobile" class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
-            <flux:sidebar.header>
-                <x-app-logo :sidebar="true" href="{{ route('dashboard') }}" wire:navigate />
-                <flux:sidebar.collapse class="lg:hidden" />
-            </flux:sidebar.header>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
-            <flux:sidebar.nav>
-                <flux:sidebar.group :heading="__('Platform')" class="grid">
-                    <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
-                        {{ __('Dashboard') }}
+<head>
+    @include('partials.head')
+    <style>
+        .sidebar-custom {
+            background-color: #d1d9c1;
+            width: max-content;
+        }
+
+        .bg-main-custom {
+            background-color: #ffffff;
+        }
+
+        .btn-rounded-white {
+            background-color: white !important;
+            border-radius: 9999px !important;
+            width: 200px;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-item {
+            background-color: white !important;
+            border-radius: 9999px !important;
+            margin-left: 1rem;
+            margin-right: 1rem;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb !important;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-main-custom">
+    <!-- <div class="flex w-full"> -->
+        <div class="flex">
+            <flux:sidebar collapsible="mobile" class="flex flex-col sidebar-custom border-e border-zinc-200">
+                <flux:sidebar.header class="flex flex-col items-center pt-10">
+                    <div class="w-24 h-24 mb-6 overflow-hidden flex items-center justify-center shadow-sm">
+                        <x-app-logo class="w-16 h-16" href="{{ route('dashboard') }}" />
+                        <!-- <flux:sidebar.collapse class=" cursor-pointer hover:bg-zinc-200/50 rounded-lg p-1"/> -->
+                    </div>
+                </flux:sidebar.header>
+
+                <flux:sidebar.nav class="px-4 mt-2">
+                    <flux:sidebar.item icon="arrow-left-start-on-rectangle" href="/" class="btn-rounded-white">
+                        Ir a página Usuario
                     </flux:sidebar.item>
-                    <flux:sidebar.item icon="user" wire:navigate>
-                        {{ __('Users') }}
+
+                    <flux:sidebar.item icon="calendar" :href="route('dashboard')" :current="request()->routeIs('dashboard')" class="btn-rounded-white">
+                        Ver todos los eventos
                     </flux:sidebar.item>
-                </flux:sidebar.group>
-            </flux:sidebar.nav>
 
-            <flux:spacer />
+                    <flux:sidebar.item icon="magnifying-glass" href="#" class="btn-rounded-white">
+                        Buscar por categoría
+                    </flux:sidebar.item>
+                </flux:sidebar.nav>
 
-            <flux:sidebar.nav>
-                <flux:sidebar.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
-                    {{ __('Repository') }}
-                </flux:sidebar.item>
+                <div class="p-4 mb-4 mx-4 bg-white/50 rounded-2xl border border-zinc-200">
+                    <x-desktop-user-menu :name="auth()->user()->name" />
+                </div>
+            </flux:sidebar>
 
-                <flux:sidebar.item icon="book-open-text" href="https://laravel.com/docs/starter-kits#livewire" target="_blank">
-                    {{ __('Documentation') }}
-                </flux:sidebar.item>
-            </flux:sidebar.nav>
+            <div class="flex gap-6 w-full px-6 mt-4">
+                <div class="w-full bg-white p-6 rounded-[2rem] border border-zinc-200 min-h-[250px] shadow-sm">
+                    <h2 class="font-bold text-zinc-800 mb-4">Próximos eventos</h2>
+                    <div class="border-t border-zinc-100 pt-4">
+                        <p class="text-sm text-zinc-400 italic">Cargando datos de eventos...</p>
+                    </div>
+                </div>
+                <div class="w-full bg-white p-6 rounded-[2rem] border border-zinc-200 min-h-[250px] shadow-sm">
+                    <h2 class="font-bold text-zinc-800 mb-4">Solicitudes recientes</h2>
+                    <div class="border-t border-zinc-100 pt-4">
+                        <p class="text-sm text-zinc-400 italic">Cargando solicitudes...</p>
+                    </div>
+                </div>
+            </div>
+        <!-- </div> -->
+    </div>
 
-            <x-desktop-user-menu class="hidden lg:block" :name="auth()->user()->name" />
-        </flux:sidebar>
+    <flux:header class="lg:hidden bg-sidebar-custom border-b border-zinc-200">
+        <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
+        <flux:spacer />
+        <x-desktop-user-menu :name="auth()->user()->name" />
+    </flux:header>
 
 
-        <!-- Mobile User Menu -->
-        <flux:header class="lg:hidden">
-            <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
 
-            <flux:spacer />
-
-            <flux:dropdown position="top" align="end">
-                <flux:profile
-                    :initials="auth()->user()->initials()"
-                    icon-trailing="chevron-down"
-                />
-
-                <flux:menu>
-                    <flux:menu.radio.group>
-                        <div class="p-0 text-sm font-normal">
-                            <div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
-                                <flux:avatar
-                                    :name="auth()->user()->name"
-                                    :initials="auth()->user()->initials()"
-                                />
-
-                                <div class="grid flex-1 text-start text-sm leading-tight">
-                                    <flux:heading class="truncate">{{ auth()->user()->name }}</flux:heading>
-                                    <flux:text class="truncate">{{ auth()->user()->email }}</flux:text>
-                                </div>
-                            </div>
-                        </div>
-                    </flux:menu.radio.group>
-
-                    <flux:menu.separator />
-
-                    <flux:menu.radio.group>
-                        <flux:menu.item :href="route('profile.edit')" icon="cog" wire:navigate>
-                            {{ __('Settings') }}
-                        </flux:menu.item>
-                    </flux:menu.radio.group>
-
-                    <flux:menu.separator />
-
-                    <form method="POST" action="{{ route('logout') }}" class="w-full">
-                        @csrf
-                        <flux:menu.item
-                            as="button"
-                            type="submit"
-                            icon="arrow-right-start-on-rectangle"
-                            class="w-full cursor-pointer"
-                            data-test="logout-button"
-                        >
-                            {{ __('Log Out') }}
-                        </flux:menu.item>
-                    </form>
-                </flux:menu>
-            </flux:dropdown>
-        </flux:header>
-
+    <main class="w-full">
         {{ $slot }}
+    </main>
 
-        @fluxScripts
-    </body>
+    @fluxScripts
+</body>
+
 </html>

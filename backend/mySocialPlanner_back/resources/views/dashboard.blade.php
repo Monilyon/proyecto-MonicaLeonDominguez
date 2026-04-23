@@ -1,18 +1,39 @@
 <x-layouts::app :title="__('Dashboard')">
-    <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
-        <div class="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
-                <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
+    <div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+            <div class="bg-white p-6 rounded-[2rem] border border-zinc-200 shadow-sm flex items-center justify-between">
+                <div>
+                    <p class="text-lg font-bold text-zinc-400 uppercase tracking-widest">Eventos activos</p>
+                    <p class="text-5xl font-black text-zinc-900 mt-1">{{ $eventosCount ?? 5 }}</p>
+                </div>
+                <div class="bg-[#f2f4e8] p-4 rounded-2xl">
+                    <flux:icon.calendar class="w-10 h-10 text-zinc-600" />
+                </div>
             </div>
-            <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
-                <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
+
+            <div class="bg-white p-6 rounded-[2rem] border border-zinc-200 shadow-sm flex items-center justify-between">
+                <div>
+                    <p class="text-lg font-bold text-zinc-400 uppercase tracking-widest">Usuarios</p>
+                    <p class="text-5xl font-black text-zinc-900 mt-1">{{ $usuariosCount ?? 8 }}</p>
+                </div>
+                <div class="bg-[#f2f4e8] p-4 rounded-2xl">
+                    <flux:icon.users class="w-10 h-10 text-zinc-600" />
+                </div>
             </div>
-            <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
-                <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
+
+            <div class="bg-white p-6 rounded-[2rem] border border-zinc-200 shadow-sm flex items-center justify-between">
+                <div>
+                    <p class="text-lg font-bold text-zinc-400 uppercase tracking-widest">Solicitudes</p>
+                    <p class="text-5xl font-black text-zinc-900 mt-1">{{ $solicitudesCount ?? 2 }}</p>
+                </div>
+                <div class="bg-[#f2f4e8] p-4 rounded-2xl">
+                    <flux:icon.document-text class="w-10 h-10 text-zinc-600" />
+                </div>
             </div>
+
         </div>
-        <div class="relative h-full flex-1 overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
-            <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
-        </div>
+
     </div>
 </x-layouts::app>
