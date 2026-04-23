@@ -13,12 +13,12 @@
 
     <style>
         .btn-mockup {
-            background-color: #f1efed;
+            background-color: #ffffff;
             color: #1a1a1a;
             border-radius: 20px;
             font-size: 14px;
             font-weight: 500;
-            border: 1px solid #e2e0de;
+            border: 1px solid #d1d9c1;
             transition: all 0.3s;
             height: 44px;
             display: flex;
@@ -27,15 +27,22 @@
             padding: 0 24px;
             white-space: nowrap;
         }
+
         .btn-mockup:hover {
             background-color: #e5e3e1;
+        }
+
+        body {
+            background-color: #d1d9c1;
+
         }
     </style>
 </head>
 
 <body class="flex items-center justify-center min-h-screen bg-[#f3f4f1] p-6 md:p-10">
 
-    <div class="grid grid-cols-1 md:grid-cols-2 items-center bg-white border border-gray-200 rounded-[40px] md:rounded-[50px] p-8 md:p-16 max-w-6xl w-full gap-12 md:gap-16 shadow-sm">
+    <div class="grid grid-cols-1 md:grid-cols-2 items-center bg-white border border-gray-200 rounded-[40px] md:rounded-[50px] p-8 md:p-16 max-w-6xl w-full gap-12 md:gap-16 shadow-sm" style="            background-color: #f3ebeb;
+">
 
         <div class="flex justify-center w-full">
             <img src="{{ asset('logo panel admin.png') }}" alt="Logo" class="w-full max-w-[280px] md:max-w-md h-auto block">
@@ -65,4 +72,5 @@
     </div>
 
 </body>
+
 </html>

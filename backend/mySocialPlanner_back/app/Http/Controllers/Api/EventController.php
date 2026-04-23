@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Event;
 use Illuminate\Http\Request;
+use App\Models\Type;
 
 class EventController extends Controller
 {
@@ -21,22 +22,27 @@ class EventController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    public function create()
+    {
+        $types = Type::all();
+        return view('events.create', compact('types'));
+    }
+
     public function store(Request $request)
     {
-        // Validamos los datos
-
         $validated = $request->validate([
-            'title' => 'required|string|max:150',
+            'name' => 'required|string|max:150',
             'description' => 'required|string',
             'date' => 'required|date',
             'location' => 'required|string|max:255',
-            'capacity' => 'required|integer|min:1',
-            'id_type' => 'required|exists:types,id',
-
+            'type_id' => 'required|exists:types,id',
         ]);
-        $event = Event::create($validated);
-        return response()->json(['status' => 'success', 'event' => $event], 201);
+
+        Event::create($validated);
+
+        return redirect()->route('dashboard')->with('success', 'Evento creado exitosamente.');
     }
+
 
     /**
      * Display the specified resource.

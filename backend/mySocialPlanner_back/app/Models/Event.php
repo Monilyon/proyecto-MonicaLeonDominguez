@@ -12,12 +12,14 @@ class Event extends Model
         'date',
         'location',
         'capacity',
-        'type_id',
+        'id_type',
     ];
+
+    protected $dates = ['date'];
     //Relación evento con tipo (un evento pertenece a un tipo)
     public function type()
     {
-        return $this->belongsTo(Type::class);
+        return $this->belongsTo(Type::class, 'id_type');
     }
     //Relacion con inscripciones (un evento puede tener muchas inscripciones)
     public function registrations(){
