@@ -39,26 +39,25 @@
     </style>
 </head>
 
-<body class="flex items-center justify-center min-h-screen bg-[#f3f4f1] p-6 md:p-10">
+<body class="flex items-center justify-center min-h-screen bg-[#f3f4f1] p-6">
 
-    <div class="grid grid-cols-1 md:grid-cols-2 items-center bg-white border border-gray-200 rounded-[40px] md:rounded-[50px] p-8 md:p-16 max-w-6xl w-full gap-12 md:gap-16 shadow-sm" style="            background-color: #f3ebeb;
-">
+    <div class="grid grid-cols-1 md:grid-cols-2 items-center bg-white border border-gray-200 rounded-[40px] md:rounded-[50px] max-w-6xl w-full shadow-sm" style="background-color: #f3ebeb; max-height: 620px;">
 
-        <div class="flex justify-center w-full">
-            <img src="{{ asset('logo panel admin.png') }}" alt="Logo" class="w-full max-w-[280px] md:max-w-md h-auto block">
+        <div class="flex w-full h-full items-center justify-center p-6">
+            <img src="{{ asset('logo panel admin.png') }}" alt="Logo" class=" h-auto block">
         </div>
 
-        <div class="flex flex-col items-center md:items-start text-center md:text-left w-full">
+        <div class="flex flex-col items-center md:items-start text-center md:text-left w-full px-6 ">
 
-            <h2 class="text-3xl md:text-4xl font-bold text-black mb-4 leading-tight">
+            <h1 class="text-3xl md:text-4xl font-bold text-black mb-4 ">
                 Bienvenido al panel de administración
-            </h2>
+            </h1>
 
             <p class="text-gray-600 text-lg md:text-xl mb-8">
                 Aquí podrás gestionar actividades de ocio, deportes, cultura y acción social con las herramientas oficiales de nuestra plataforma.
             </p>
 
-            <div class="flex flex-row md:flex-row items-stretch md:items-start gap-3 w-full md:w-auto">
+            <div class="flex flex-row md:flex-row items-stretch md:items-start gap-3 py-6  w-full md:w-auto">
                 <a href="{{ url('/dashboard') }}" class="btn-mockup w-full md:w-auto">
                     Ver eventos
                 </a>

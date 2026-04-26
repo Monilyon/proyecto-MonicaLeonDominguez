@@ -15,15 +15,15 @@
 
         .btn-rounded-white {
             background-color: white !important;
-            border-radius: 9999px !important;
-            width: 200px;
+            border-radius: 8px;
+            width: auto;
             margin-bottom: 0.75rem;
             box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
         }
 
         .nav-item {
             background-color: white !important;
-            border-radius: 9999px !important;
+            border-radius: 8px;
             margin-left: 1rem;
             margin-right: 1rem;
             margin-bottom: 0.75rem;
@@ -33,10 +33,10 @@
     </style>
 </head>
 
-<body class="min-h-screen bg-main-custom">
+<body class="min-h-screen bg-main-custom m-0">
     <!-- <div class="flex w-full"> -->
         <div class="flex">
-            @php $hideSidebar = request()->routeIs('events.create') || request()->is('events/create'); @endphp
+            @php $hideSidebar = request()->routeIs('events.create') || request()->routeIs('events.index') || request()->routeIs('events.edit') || request()->is('events/create'); @endphp
             @if(!$hideSidebar)
                 <flux:sidebar collapsible="mobile" class="flex flex-col sidebar-custom border-e border-zinc-200">
                     <flux:sidebar.header class="flex flex-col items-center pt-10">
@@ -51,16 +51,13 @@
                             Ir a página Usuario
                         </flux:sidebar.item>
 
-                        <flux:sidebar.item icon="calendar" :href="route('dashboard')" :current="request()->routeIs('dashboard')" class="btn-rounded-white">
+                        <flux:sidebar.item icon="calendar" :href="route('events.index')" :current="request()->routeIs('events.index')" class="btn-rounded-white">
                             Ver todos los eventos
                         </flux:sidebar.item>
 
-                        <flux:sidebar.item icon="magnifying-glass" href="#" class="btn-rounded-white">
-                            Buscar por categoría
-                        </flux:sidebar.item>
                     </flux:sidebar.nav>
 
-                    <div class="p-4 mb-4 mx-4 bg-white/50 rounded-2xl border border-zinc-200">
+                    <div class="p-4 mb-4 mx-4 bg-white border border-zinc-200 btn-rounded-white flex justify-center shadow-sm mt-auto">
                         <x-desktop-user-menu :name="auth()->user()->name" />
                     </div>
                 </flux:sidebar>
@@ -88,7 +85,7 @@
                         </div>
                     </div>
                     <div class="w-full bg-white p-4 rounded-[2rem] border border-zinc-200 min-h-[250px] shadow-sm">
-                        <h2 class="font-bold text-zinc-800 mb-4">Solicitudes recientes</h2>
+                        <h2 class="font-bold text-zinc-800 mb-4">Solicitudes pendientes</h2>
                         <div class="border-t border-zinc-100 pt-4">
                             <p class="text-sm text-zinc-400 italic">Cargando solicitudes...</p>
                         </div>
