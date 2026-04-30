@@ -15,6 +15,7 @@ class Registration extends Model
         return $this->belongsTo(Event::class);
     }
     public function status(){
-        return $this->belongsTo(RegistrationStatus::class);
+        return $this->belongsTo(RegistrationStatus::class, 'status_id');
     }
+
 }

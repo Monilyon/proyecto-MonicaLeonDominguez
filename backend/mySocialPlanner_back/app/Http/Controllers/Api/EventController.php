@@ -49,7 +49,9 @@ class EventController extends Controller
      */
     public function show(string $id)
     {
-        //
+        //obtener un evento especifico segun su id, con su tipo asociado y devolverlo en formato JSON
+        $event = Event::with('type')->findOrFail($id);
+        return response()->json(['status' => 'success', 'data' => $event], 200);
     }
 
     /**
