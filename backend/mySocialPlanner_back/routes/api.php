@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\AuthController;
 // Cualquiera (incluso sin estar logueado) puede ver eventos y loguearse
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/events', [EventController::class, 'index']);
+Route::post('/register', [AuthController::class, 'register']);
 
 
 // --- RUTAS PROTEGIDAS (Requieren Token Sanctum) ---
@@ -18,6 +19,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Perfil y datos del usuario
     Route::get('/user/profile', [UserController::class, 'profile']);
+    Route::post('/logout', [AuthController::class, 'logout']);
 
     // Inscripciones
     Route::post('/registrations', [RegistrationController::class, 'store']);
@@ -26,4 +28,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/events', [EventController::class, 'store']);
     Route::get('/events/{event}', [EventController::class, 'show']);
+    Route::middleware('auth:sanctum')->group(function () {
+});
 });

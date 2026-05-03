@@ -3,7 +3,6 @@
     <TheHeader />
 
     <v-main>
-      <!-- router-view es donde se cargará HomeView -->
       <router-view />
     </v-main>
   </v-app>

@@ -1,41 +1,58 @@
 <script setup lang="ts">
 import logo from '@/assets/LogoHorizontal.png';
+import { useAuth } from '@/composables/useAuth';
+
+const { isLoggedIn, user, logout } = useAuth();
 </script>
+
 <template>
-
-  <!-- Aqui implementar if/else para en el caso de que el usuario esté logueado mostrar el avatar a la derecha, logo a la izquierda y
-  en el centro 3 botones (home, Calendario, mis eventos) y en el caso de que no esté logueado mostrar solo el logo en el centro y
-  a la derecha un botón de usuario que al hacer click redirija a iniciar sesión o registrarse -->
-  <v-app-bar v-if="false" color="#D1D9C1" elevation="2" class="px-md-10">
-    <v-btn variant="text">Home</v-btn>
-    <v-btn variant="text">Calendario</v-btn>
-    <v-btn variant="text">Mis Eventos</v-btn>
+  <v-app-bar v-if="isLoggedIn" color="#D1D9C1" elevation="2">
+    <v-img :src="logo" style="max-width: 100px; margin-left: 2%;" />
 
     <v-spacer />
 
-    <div class="d-flex flex-column align-center">
-      <v-img :src="logo" width="200" />
+    <v-btn variant="text" to="/">Home</v-btn>
+    <v-btn variant="text" to="/calendar">Calendario</v-btn>
+    <v-btn variant="text" to="/my-events">Mis eventos</v-btn>
+
+    <v-spacer />
+
+    <div class="d-flex align-center gap-3">
+      <div class="text-right">
+        <div class="text-caption">Hola, <strong>{{ user?.name || 'Usuario' }}</strong></div>
+      </div>
+      <div class="d-flex align-center">
+        <v-menu min-width="150px" rounded="lg">
+          <template v-slot:activator="{ props }">
+            <v-btn icon v-bind="props" variant="text">
+              <v-avatar size="36" color="brown-lighten-4">
+                <v-icon size="large" color="brown-darken-2">mdi-account-circle</v-icon>
+              </v-avatar>
+            </v-btn>
+          </template>
+
+          <v-list class="pa-2">
+            <v-list-item prepend-icon="mdi-account-outline" title="Mi perfil" to="/perfil" rounded="md" class="mb-1">
+            </v-list-item>
+
+            <v-divider class="my-1"></v-divider>
+
+            <v-list-item prepend-icon="mdi-logout" title="Cerrar sesión" @click="logout" rounded="md" color="error">
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </div>
     </div>
-
-    <v-spacer />
-
-    <v-btn icon variant="text">
-      <v-avatar size="32">
-        <v-icon size="large" color="brown-lighten-3">mdi-account-circle</v-icon>
-      </v-avatar>
-    </v-btn>
-
   </v-app-bar>
 
   <v-app-bar v-else color="#D1D9C1" elevation="2" class="px-md-10">
-
     <div class="d-flex flex-column align-center">
       <v-img :src="logo" width="200" />
     </div>
 
     <v-spacer />
 
-    <v-btn icon variant="text" @click="$router.push('/login')">
+    <v-btn icon variant="text" to="/login">
       <v-avatar size="32">
         <v-icon size="large" color="brown-lighten-3">mdi-account-circle</v-icon>
       </v-avatar>

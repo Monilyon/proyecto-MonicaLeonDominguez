@@ -8,11 +8,21 @@ export function useEvents() {
   const loading = ref(true);
   const error = ref<string | null>(null);
 
-  const fetchEvents = async () => {
+ const fetchEvents = async () => {
     loading.value = true;
     try {
       const data = await eventService.getNextEvents();
-      events.value = data.slice(0, 5);
+      const hoy = new Date().getTime();
+
+      events.value = data
+        .filter(event => event.date !== undefined && new Date(event.date).getTime() >= hoy)
+        .sort((a, b) => {
+          const dateA = new Date(a.date!).getTime();
+          const dateB = new Date(b.date!).getTime();
+          return dateA - dateB;
+        })
+        .slice(0, 5);
+
     } catch (err) {
       error.value = err instanceof Error ? err.message : 'Error';
     } finally {

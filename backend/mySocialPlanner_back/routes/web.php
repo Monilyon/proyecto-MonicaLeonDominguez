@@ -9,6 +9,12 @@ use App\Http\Controllers\EventController;
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
+
+// Redirige al login del frontend cuando el backend intenta usar la ruta login.
+Route::get('/login', function () {
+    return redirect('http://localhost:5174/login');
+})->name('login');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         return view('dashboard', [
