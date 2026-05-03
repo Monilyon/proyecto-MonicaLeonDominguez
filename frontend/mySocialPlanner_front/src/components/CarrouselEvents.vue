@@ -1,8 +1,3 @@
-¡Claro! Vamos a conectar ese Composable que acabamos de pulir con la interfaz del carrusel. Para que sea legible y mantenible, seguiremos usando la estructura de la imagen.png, pero ahora los datos vendrán vivos desde tu API.
-
-Aquí tienes el componente EventsCarousel.vue actualizado:
-Fragmento de código
-
 <template>
   <v-card
     class="mx-auto my-12 rounded-xl elevation-2"
