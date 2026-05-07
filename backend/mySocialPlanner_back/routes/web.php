@@ -12,7 +12,7 @@ Route::get('/', function () {
 
 // Redirige al login del frontend cuando el backend intenta usar la ruta login.
 Route::get('/login', function () {
-    return redirect('http://localhost:5174/login');
+    return redirect('http://localhost:5173/login');
 })->name('login');
 
 Route::middleware(['auth', 'verified'])->group(function () {

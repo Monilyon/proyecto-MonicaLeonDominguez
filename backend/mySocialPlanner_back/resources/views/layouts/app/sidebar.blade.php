@@ -20,6 +20,13 @@
             margin-bottom: 0.75rem;
             box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
         }
+        .btn-rounded-green {
+            background-color: white !important;
+            border-radius: 8px;
+            width: auto;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 1px 2px 0 rgba(54, 91, 41, 0.05);
+        }
 
         .nav-item {
             background-color: white !important;
@@ -47,12 +54,12 @@
                     </flux:sidebar.header>
 
                     <flux:sidebar.nav class="px-4 mt-2">
-                        <flux:sidebar.item icon="arrow-left-start-on-rectangle" href="/" class="btn-rounded-white">
-                            Ir a página Usuario
+                        <flux:sidebar.item icon="home" href="http://localhost:5173" class="btn-rounded-white">
+                            Home
                         </flux:sidebar.item>
 
-                        <flux:sidebar.item icon="calendar" :href="route('events.index')" :current="request()->routeIs('events.index')" class="btn-rounded-white">
-                            Ver todos los eventos
+                        <flux:sidebar.item icon="arrow-left-start-on-rectangle" href="/" class="btn-rounded-white">
+                            Ir a página Usuario
                         </flux:sidebar.item>
 
                     </flux:sidebar.nav>
@@ -83,6 +90,10 @@
                                 <p class="text-sm text-zinc-400 italic">No hay eventos próximos.</p>
                             @endif
                         </div>
+
+                        <flux:sidebar.item icon="calendar" :href="route('events.index')" :current="request()->routeIs('events.index')" class="btn-rounded-green">
+                            Ver todos los eventos
+                        </flux:sidebar.item>
                     </div>
                     <div class="w-full bg-white p-4 rounded-[2rem] border border-zinc-200 min-h-[250px] shadow-sm">
                         <h2 class="font-bold text-zinc-800 mb-4">Solicitudes pendientes</h2>
