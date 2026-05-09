@@ -79,6 +79,16 @@ const register = async (userData: RegisterData) => {
   }
 };
   const logout = async () => {
+    // Si el usuario es admin, cierra también la sesión web de Laravel
+    if (user.value?.rol === 'admin') {
+      try {
+        await authService.logoutWebSession();
+      } catch (err) {
+        console.warn('Error al cerrar sesión web de admin...');
+      }
+    }
+
+    // Cierra la sesión de la API (Sanctum)
     if (token.value) {
       try {
         await authService.logout(token.value);

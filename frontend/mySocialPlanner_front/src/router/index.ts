@@ -3,6 +3,13 @@ import HomeView from '@/views/HomeView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  scrollBehavior(_to, _from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    }
+
+    return { left: 0, top: 0 }
+  },
   routes: [
     {
       path: '/',
@@ -17,17 +24,27 @@ const router = createRouter({
     {
       path: '/register',
       name: '/register',
-      component: ()=> import('@/views/RegisterView.vue'),
+      component: () => import('@/views/RegisterView.vue'),
     },
     {
       path: '/calendar',
-      name:'/calendar',
-      component: ()=> import("@/views/CalendarView.vue"),
+      name: '/calendar',
+      component: () => import('@/views/CalendarView.vue'),
+    },
+    {
+      path: '/calendario/:eventId?',
+      name: 'Calendario',
+      component: () => import('@/views/CalendarView.vue'),
     },
     {
       path: '/MyEvents',
-      name:'/myEvents',
-      component: ()=> import("@/views/MyEvents.vue"),
+      name: 'myEvents',
+      component: () => import('@/views/MyEvents.vue'),
+    },
+    {
+      path: '/MyProfile',
+      name: 'myProfile',
+      component: () => import('@/views/MyProfile.vue'),
     },
   ],
 })

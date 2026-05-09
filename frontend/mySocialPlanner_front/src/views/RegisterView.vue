@@ -63,14 +63,12 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <TheFooter />
   </v-container>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import { useAuth } from '@/composables/useAuth'
-import TheFooter from '@/components/TheFooter.vue'
 import LogoGrande from '@/assets/Logo circular v4.png'
 
 const { register, loading, error } = useAuth()

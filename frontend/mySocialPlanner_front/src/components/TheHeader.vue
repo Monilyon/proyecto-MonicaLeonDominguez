@@ -11,7 +11,7 @@ const { isLoggedIn, user, logout } = useAuth();
 
     <v-spacer />
 
-    <v-btn variant="text" to="/">Home</v-btn>
+    <v-btn variant="text" to="/">Inicio</v-btn>
     <v-btn variant="text" to="/calendar">Calendario</v-btn>
     <v-btn variant="text" to="/MyEvents">Mis eventos</v-btn>
 

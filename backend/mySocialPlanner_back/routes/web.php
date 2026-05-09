@@ -5,6 +5,7 @@ use App\Models\Event;
 use App\Models\User;
 use App\Models\Registration;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\Api\RegistrationController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -35,5 +36,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', function () { // Vista del panel de administración
         return view('admin.dashboard');
     })->name('admin.dashboard');
+
+    Route::put('/registrations/{registration}/status', [RegistrationController::class, 'update'])
+        ->name('admin.registration.update');
 });
 require __DIR__.'/settings.php';

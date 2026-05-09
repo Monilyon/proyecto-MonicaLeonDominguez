@@ -1,5 +1,5 @@
 <template>
-  <section style="background-color: #D1D9C1;" class="my-4 py-4">
+  <section style="background-color: #efebe9;" class="my-4 py-4">
     <v-container>
 
       <v-row

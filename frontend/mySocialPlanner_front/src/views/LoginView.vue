@@ -93,14 +93,12 @@
         </v-card>
       </v-col>
     </v-row>
-    <TheFooter />
   </v-container>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useAuth } from '@/composables/useAuth'
-import TheFooter from '@/components/TheFooter.vue'
 import LogoGrande from '@/assets/Logo circular v4.png'
 
 const { login, loading, error } = useAuth()

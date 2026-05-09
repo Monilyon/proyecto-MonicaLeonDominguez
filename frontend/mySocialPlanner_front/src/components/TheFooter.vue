@@ -1,5 +1,5 @@
 <template>
-  <v-footer  style="background-color: #FFF8F8;">
+  <v-footer  style="background-color: #D1D9C1; max-height: 250px;" >
     <v-container>
       <v-row justify="space-between">
 

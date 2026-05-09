@@ -103,7 +103,6 @@ export const authService = {
   /**
    * Método para logout
    */
-
   async logout(token: string) {
     const response = await fetch(`${API_BASE_URL}/logout`, {
       method: 'POST',
@@ -119,5 +118,28 @@ export const authService = {
     }
 
     return await response.json();
+  },
+
+  /**
+   * Método para logout de la sesión web de Laravel
+   */
+  async logoutWebSession() {
+    const csrfToken = getCookie('XSRF-TOKEN');
+
+    const response = await fetch(`${WEB_BASE_URL}/logout`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'X-XSRF-TOKEN': csrfToken || '',
+      },
+    });
+
+    if (!response.ok) {
+      console.warn('No se pudo cerrar la sesión web en el servidor');
+    }
+
+    return true;
   }
 };

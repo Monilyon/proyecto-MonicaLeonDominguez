@@ -19,8 +19,8 @@ class RegistrationController extends Controller
     {
         $user = Auth::user();
 
-        // Si el usuario es administrador (ajusta 'is_admin' según tu columna en la DB)
-        if ($user->is_admin) {
+        // Si el usuario es administrador
+        if ($user->rol === 'admin') {
             $registrations = Registration::with(['user', 'event', 'status'])->get();
         } else {
             // El usuario normal solo ve sus propias inscripciones
@@ -48,7 +48,7 @@ class RegistrationController extends Controller
         $user = Auth::user();
         $event = Event::findOrFail($request->event_id);
 
-        // 1. Evitar duplicados
+        // Evitar duplicados
         $exists = Registration::where('user_id', $user->id)
             ->where('event_id', $event->id)
             ->exists();
@@ -57,22 +57,23 @@ class RegistrationController extends Controller
             return response()->json(['message' => 'Ya estás inscrito en este evento'], 400);
         }
 
-        // 2. Verificar disponibilidad de plazas
+        // Verificar disponibilidad de plazas
         $currentRegistrations = Registration::where('event_id', $event->id)->count();
         if ($currentRegistrations >= $event->capacity) {
             return response()->json(['message' => 'El evento está lleno'], 400);
         }
 
-        // 3. Crear la inscripción
+        //  Crear la inscripción
         $registration = Registration::create([
             'user_id' => $user->id,
             'event_id' => $event->id,
-            'status_id' => 1, // "Pendiente" o "Confirmado" según tu lógica
+            'registration_status_id' => 1,
+            'registration_date' => now(),
         ]);
 
         return response()->json([
             'message' => 'Inscripción realizada con éxito',
-            'data' => $registration->load('event')
+            'data' => $registration->load(['event', 'status'])
         ], 201);
     }
 
@@ -82,22 +83,26 @@ class RegistrationController extends Controller
     public function update(Request $request, string $id)
     {
         // Solo el admin debería poder cambiar estados de otros
-        if (!Auth::user()->is_admin) {
+        if (Auth::user()->rol !== 'admin') {
             return response()->json(['message' => 'No tienes permisos para realizar esta acción'], 403);
         }
 
         $request->validate([
-            'status_id' => 'required|exists:statuses,id',
+            'status_id' => 'required|exists:registration_status,id',
         ]);
 
         $registration = Registration::findOrFail($id);
-        $registration->status_id = $request->status_id;
+        $registration->registration_status_id = $request->status_id;
         $registration->save();
 
-        return response()->json([
-            'message' => 'El estado de la inscripción ha sido actualizado',
-            'registration' => $registration->load(['user', 'event', 'status'])
-        ]);
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'message' => 'El estado de la inscripción ha sido actualizado',
+                'registration' => $registration->load(['user', 'event', 'status'])
+            ]);
+        }
+
+        return redirect()->back()->with('status', 'El estado de la inscripción ha sido actualizado.');
     }
 
     /**
@@ -109,7 +114,7 @@ class RegistrationController extends Controller
         $user = Auth::user();
 
         // Aqui se verifica si es el usuario o si es administrador
-        if ($registration->user_id !== $user->id && !$user->is_admin) {
+        if ($registration->user_id !== $user->id && $user->rol !== 'admin') {
             return response()->json(['message' => 'Acción no autorizada'], 403);
         }
 
