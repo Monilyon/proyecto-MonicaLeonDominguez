@@ -34,24 +34,37 @@ class AuthController extends Controller
             'token_type' => 'Bearer',
             'user' => [
                 'name' => $user->name,
+                'last_name' => $user->last_name,
+                'phone' => $user->phone,
                 'rol'  => $user->rol,
-                'email' => $user->email
+                'email' => $user->email,
+                'profile_photo_url' => $user->profile_photo_url
             ]
         ]);
     }
     public function register(Request $request)
     {
         $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
+            'name'      => 'required|string|max:255',
+            'last_name' => 'nullable|string|max:255',
+            'email'     => 'required|string|email|max:255|unique:users',
+            'phone'     => 'nullable|string|max:20',
+            'password'  => 'required|string|min:8',
+            'photo'     => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
+$path = null;
+        if ($request->hasFile('photo')) {
+            $path = $request->file('photo')->store('profile-photos', 'public');
+        }
 
         $user = User::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
-            'password' => Hash::make($request->password),
-            'rol'      => 'usuario',
+            'name'               => $request->name,
+            'last_name'          => $request->last_name,
+            'email'              => $request->email,
+            'phone'              => $request->phone,
+            'password'           => Hash::make($request->password),
+            'rol'                => 'usuario',
+            'profile_photo_path' => $path,
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -61,7 +74,11 @@ class AuthController extends Controller
             'token_type'   => 'Bearer',
             'user' => [
                 'name' => $user->name,
-                'rol'  => $user->rol
+                'last_name' => $user->last_name,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'rol'  => $user->rol,
+                'profile_photo_url' => $user->profile_photo_url
             ]
         ], 201);
     }

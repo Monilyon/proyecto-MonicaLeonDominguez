@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\Api\RegistrationController;
-use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\AuthController;
 
 // --- RUTAS PÚBLICAS ---
@@ -18,7 +18,8 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::middleware('auth:sanctum')->group(function () {
 
     // Perfil y datos del usuario
-    Route::get('/user/profile', [UserController::class, 'profile']);
+    Route::get('/user/profile', [ProfileController::class, 'show']);
+    Route::post('/user/profile', [ProfileController::class, 'update']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
     // Inscripciones

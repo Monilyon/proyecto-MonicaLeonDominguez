@@ -1,15 +1,17 @@
-const API_BASE_URL = 'http://localhost:8000/api';
-const WEB_BASE_URL = 'http://localhost:8000';
-import type { RegisterData } from "@/types/Register";
+const API_BASE_URL = 'http://localhost:8000/api'
+const WEB_BASE_URL = 'http://localhost:8000'
+import type { RegisterData } from '@/types/Register'
 
 function getCookie(name: string): string | null {
-  const matches = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()\[\]\\\/\+^])/g, '\\$1') + '=([^;]*)'));
+  const matches = document.cookie.match(
+    new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()\[\]\\\/\+^])/g, '\\$1') + '=([^;]*)'),
+  )
 
   if (!matches || !matches[1]) {
-    return null;
+    return null
   }
 
-  return decodeURIComponent(matches[1]);
+  return decodeURIComponent(matches[1])
 }
 
 export const authService = {
@@ -22,18 +24,18 @@ export const authService = {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
+        Accept: 'application/json',
       },
       body: JSON.stringify(credentials),
-    });
+    })
 
-    const data = await response.json();
+    const data = await response.json()
 
     if (!response.ok) {
-      throw new Error(data.message || 'Error en el servidor');
+      throw new Error(data.message || 'Error en el servidor')
     }
 
-    return data;
+    return data
   },
 
   /**
@@ -43,63 +45,89 @@ export const authService = {
     const csrfResponse = await fetch(`${WEB_BASE_URL}/sanctum/csrf-cookie`, {
       credentials: 'include',
       headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
       },
-    });
+    })
 
     if (!csrfResponse.ok) {
-      throw new Error('No se pudo obtener la cookie CSRF.');
+      throw new Error('No se pudo obtener la cookie CSRF.')
     }
 
-    const xsrfToken = getCookie('XSRF-TOKEN');
+    const xsrfToken = getCookie('XSRF-TOKEN')
     if (!xsrfToken) {
-      throw new Error('No se encontró el token CSRF.');
+      throw new Error('No se encontró el token CSRF.')
     }
 
-    const xsrfTokenValue: string = xsrfToken;
+    const xsrfTokenValue: string = xsrfToken
 
     const response = await fetch(`${WEB_BASE_URL}/login`, {
       method: 'POST',
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'X-XSRF-TOKEN': xsrfTokenValue,
       },
       body: JSON.stringify(credentials),
-    });
+    })
 
     if (!response.ok) {
-      const data = await response.json().catch(() => ({}));
-      throw new Error(data.message || 'Error al iniciar sesión en el backend.');
+      const data = await response.json().catch(() => ({}))
+      throw new Error(data.message || 'Error al iniciar sesión en el backend.')
     }
 
-    return true;
+    return true
   },
 
   /**
    * Método para el registro
    */
-  async register(userData: RegisterData) {
-    const response = await fetch(`${API_BASE_URL}/register`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-      body: JSON.stringify(userData),
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      // Si Laravel devuelve error, lo lanzamos para que el composable lo capture
-      throw new Error(data.message || 'Error al crear la cuenta');
+  async register(userData: RegisterData | FormData) {
+    const headers: Record<string, string> = {
+      Accept: 'application/json',
     }
 
-    return data;
-  },
+    let body
 
+    if (userData instanceof FormData) {
+      body = userData
+    } else {
+      headers['Content-Type'] = 'application/json'
+      body = JSON.stringify(userData)
+    }
+
+    const response = await fetch(`${API_BASE_URL}/register`, {
+      method: 'POST',
+      headers: headers,
+      body: body,
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Error al crear la cuenta')
+    }
+
+    return data
+  },
+  async updateProfile(formData: FormData) {
+    const token = localStorage.getItem('AUTH_TOKEN')
+    const response = await fetch(`${API_BASE_URL}/user/profile`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    });
+    const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || 'Error al actualizar el perfil');
+  }
+
+  return data;
+  },
   /**
    * Método para logout
    */
@@ -108,38 +136,38 @@ export const authService = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${token}`
+        Accept: 'application/json',
+        Authorization: `Bearer ${token}`,
       },
-    });
+    })
 
     if (!response.ok) {
-      throw new Error('No se pudo cerrar la sesión en el servidor');
+      throw new Error('No se pudo cerrar la sesión en el servidor')
     }
 
-    return await response.json();
+    return await response.json()
   },
 
   /**
    * Método para logout de la sesión web de Laravel
    */
   async logoutWebSession() {
-    const csrfToken = getCookie('XSRF-TOKEN');
+    const csrfToken = getCookie('XSRF-TOKEN')
 
     const response = await fetch(`${WEB_BASE_URL}/logout`, {
       method: 'POST',
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'X-XSRF-TOKEN': csrfToken || '',
       },
-    });
+    })
 
     if (!response.ok) {
-      console.warn('No se pudo cerrar la sesión web en el servidor');
+      console.warn('No se pudo cerrar la sesión web en el servidor')
     }
 
-    return true;
-  }
-};
+    return true
+  },
+}

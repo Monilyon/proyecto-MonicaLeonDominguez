@@ -42,7 +42,7 @@ const router = createRouter({
       component: () => import('@/views/MyEvents.vue'),
     },
     {
-      path: '/MyProfile',
+      path: '/perfil',
       name: 'myProfile',
       component: () => import('@/views/MyProfile.vue'),
     },
