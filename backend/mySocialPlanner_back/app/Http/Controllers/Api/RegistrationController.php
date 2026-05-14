@@ -78,20 +78,29 @@ class RegistrationController extends Controller
     }
 
     /**
-     * Actualizar estado solo para el panel de administración (Ej: Confirmar o Rechazar inscripciones)
+     * Actualizar estado de la inscripción
+     * Admin puede cambiar cualquier estado
+     * Usuario puede cambiar solo su propia inscripción a "Cancelada" (status_id = 4)
      */
     public function update(Request $request, string $id)
     {
-        // Solo el admin debería poder cambiar estados de otros
-        if (Auth::user()->rol !== 'admin') {
-            return response()->json(['message' => 'No tienes permisos para realizar esta acción'], 403);
-        }
-
         $request->validate([
             'status_id' => 'required|exists:registration_status,id',
         ]);
 
         $registration = Registration::findOrFail($id);
+        $user = Auth::user();
+
+        // Si no es admin, verificar que sea su propia inscripción y que el nuevo status sea "Cancelada" (id 4)
+        if ($user->rol !== 'admin') {
+            if ($registration->user_id !== $user->id) {
+                return response()->json(['message' => 'No puedes modificar inscripciones de otros usuarios'], 403);
+            }
+            if ($request->status_id != 4) {
+                return response()->json(['message' => 'Solo puedes cancelar tu propia inscripción'], 403);
+            }
+        }
+
         $registration->registration_status_id = $request->status_id;
         $registration->save();
 

@@ -24,41 +24,41 @@
                   <div class="flex-grow-1">
                     <p class="text-subtitle-2 font-weight-bold mb-1 ml-4">Nombre</p>
                     <v-text-field v-model="form.name" variant="outlined" bg-color="white" rounded="pill"
-                      density="compact" hide-details class="custom-input"></v-text-field>
+                      density="compact" hide-details class="custom-input" :rules="(requiredRule as any)" placeholder="Ingresa tu nombre"></v-text-field>
                   </div>
 
                   <div class="flex-grow-1">
                     <p class="text-subtitle-2 font-weight-bold mb-1 ml-4">Apellido</p>
                     <v-text-field v-model="form.last_name" variant="outlined" bg-color="white" rounded="pill"
-                      density="compact" hide-details class="custom-input"></v-text-field>
+                      density="compact" hide-details class="custom-input" placeholder="Ingresa tus apellidos"></v-text-field>
                   </div>
                 </div>
                 <div class="d-flex gap-3 mb-6">
                   <div class="flex-grow-1">
                     <p class="text-subtitle-2 font-weight-bold mb-1 ml-4">Teléfono</p>
                     <v-text-field v-model="form.phone" variant="outlined" bg-color="white" rounded="pill"
-                      density="compact" hide-details class="custom-input"></v-text-field>
+                      density="compact" hide-details class="custom-input" placeholder="Ingresa tu número de teléfono"></v-text-field>
                   </div>
 
                   <div class="flex-grow-1">
                     <p class="text-subtitle-2 font-weight-bold mb-1 ml-4">Foto de perfil</p>
                     <v-file-input @change="onFileSelected" variant="outlined" bg-color="white" rounded="pill"
                       density="compact" prepend-inner-icon="mdi-camera" class="custom-input" prepend-icon=""
-                      accept="image/*"></v-file-input>
+                      accept="image/*" placeholder="Selecciona una imagen"></v-file-input>
                   </div>
                 </div>
 
                 <p class="text-subtitle-2 font-weight-bold mb-1 ml-4">Correo electrónico</p>
                 <v-text-field v-model="form.email" type="email" variant="outlined" bg-color="white" rounded="pill"
-                  density="compact" hide-details class="mb-3 custom-input"></v-text-field>
+                  density="compact" hide-details class="mb-3 custom-input" :rules="(requiredRule as any)" placeholder="Ingresa tu correo electrónico "></v-text-field>
 
                 <p class="text-subtitle-2 font-weight-bold mb-1 ml-4">Confirmar correo</p>
                 <v-text-field v-model="form.email_confirmation" type="email" variant="outlined" bg-color="white"
-                  rounded="pill" density="compact" hide-details class="mb-3 custom-input"></v-text-field>
+                  rounded="pill" density="compact" hide-details class="mb-3 custom-input" :rules="(requiredRule as any)" placeholder="Confirma tu correo electrónico"></v-text-field>
 
                 <p class="text-subtitle-2 font-weight-bold mb-1 ml-4">Contraseña</p>
                 <v-text-field v-model="form.password" type="password" variant="outlined" bg-color="white" rounded="pill"
-                  density="compact" hide-details class="mb-6 custom-input"></v-text-field>
+                  density="compact" hide-details class="mb-6 custom-input" :rules="(requiredRule as any)" placeholder="Ingresa tu contraseña"></v-text-field>
               </div>
 
               <v-btn type="submit" color="#9DB094" class="text-none px-12 btn-pill font-weight-bold" rounded="pill"
@@ -153,4 +153,7 @@ const handleRegister = async () => {
   }
   await register(formData)
 }
+const requiredRule = [
+  (v: string | null | undefined): boolean | string => !!v || 'Este campo es obligatorio'
+]
 </script>

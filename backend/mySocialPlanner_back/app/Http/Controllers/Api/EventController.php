@@ -14,8 +14,8 @@ class EventController extends Controller
      */
     public function index()
     {
-        // Obtenemos todos los eventos con su tipo asociado y los devolvemos en formato JSON
-        $events = Event::with('type')->get();
+        // Obtenemos todos los eventos con su tipo asociado y el conteo de inscripciones, y los devolvemos en formato JSON
+        $events = Event::with('type')->withCount('registrations')->get();
         return response()->json(['$status' => 'success', 'data' => $events], 200);
     }
 
@@ -49,8 +49,8 @@ class EventController extends Controller
      */
     public function show(string $id)
     {
-        //obtener un evento especifico segun su id, con su tipo asociado y devolverlo en formato JSON
-        $event = Event::with('type')->findOrFail($id);
+        // Obtener un evento específico según su id, con su tipo asociado y el número de inscripciones, y devolverlo en formato JSON
+        $event = Event::with('type')->withCount('registrations')->findOrFail($id);
         return response()->json(['status' => 'success', 'data' => $event], 200);
     }
 

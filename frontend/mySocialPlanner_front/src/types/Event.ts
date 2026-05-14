@@ -5,6 +5,7 @@ export interface MyEvent {
   date: string;
   location: string;
   capacity: number;
+  registrations_count?: number;
   id_type: number;
   type?: {
     id: number;

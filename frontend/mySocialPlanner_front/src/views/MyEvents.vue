@@ -53,7 +53,7 @@
                   :key="registration.id"
                   class="mb-1"
                 >
-                  <MyEventsCard :registration="registration" />
+                  <MyEventsCard :registration="registration" @cancel="handleCancel" />
                 </div>
               </div>
             </div>
@@ -64,6 +64,26 @@
         <v-snackbar v-model="snackbar" :color="snackbarColor" location="bottom">
           {{ snackbarMessage }}
         </v-snackbar>
+
+        <v-dialog v-model="confirmDialog" max-width="400">
+          <v-card>
+            <v-card-title class="text-h6">
+              Confirmar cancelación
+            </v-card-title>
+            <v-card-text>
+              ¿Estás seguro de que quieres cancelar esta inscripción? Esta acción no se puede deshacer.
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn variant="text" @click="confirmDialog = false">
+                Cancelar
+              </v-btn>
+              <v-btn color="red" variant="flat" @click="confirmCancel">
+                Confirmar
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-container>
     </v-main>
   </v-app>
@@ -76,16 +96,37 @@ import { useRegistration } from '@/composables/useRegistration';
 import MyEventsCard from '@/components/MyEventsCard.vue';
 // import TheFooter from '@/components/TheFooter.vue';
 const { isLoggedIn } = useAuth();
-const { registrations, loading, error, fetchRegistrations } = useRegistration();
+const { registrations, loading, error, fetchRegistrations, cancelRegistration } = useRegistration();
 
 const snackbar = ref(false);
 const snackbarMessage = ref('');
 const snackbarColor = ref('success');
 
+const confirmDialog = ref(false);
+const registrationToCancel = ref<number | null>(null);
+
 const showSnackbar = (message: string, color: 'success' | 'error' = 'success') => {
   snackbarMessage.value = message;
   snackbarColor.value = color;
   snackbar.value = true;
+};
+
+const handleCancel = (registrationId: number) => {
+  registrationToCancel.value = registrationId;
+  confirmDialog.value = true;
+};
+
+const confirmCancel = async () => {
+  if (registrationToCancel.value) {
+    try {
+      await cancelRegistration(registrationToCancel.value);
+      showSnackbar('Inscripción cancelada exitosamente');
+    } catch {
+      showSnackbar('Error al cancelar la inscripción', 'error');
+    }
+  }
+  confirmDialog.value = false;
+  registrationToCancel.value = null;
 };
 
 onMounted(async () => {

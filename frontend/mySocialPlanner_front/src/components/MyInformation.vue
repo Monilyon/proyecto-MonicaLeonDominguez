@@ -78,7 +78,7 @@
 
                 <div class="mb-2 text-left">
                   <label class="text-subtitle-2 font-weight-bold text-grey">Rol</label>
-                  <p class="text-body-1 text-capitalize">{{ user?.rol || 'Usuario' }}</p>
+                  <v-chip class="text-body-1 text-capitalize mb-4">{{ user?.rol || 'Usuario' }}</v-chip>
                 </div>
               </v-col>
             </v-row>
@@ -87,12 +87,16 @@
               {{ error }}
             </v-alert>
 
-            <div class="text-right mt-6">
-              <v-btn color="#9DB094" rounded="pill" class="text-none font-weight-bold px-8" type="submit"
+            <section class="text-right d-flex justify-space-between">
+              <v-btn v-if="user?.rol === 'admin'" color="#6B7A5F" rounded="pill" class="text-none font-weight-bold"
+                 @click="goToAdminPanel">
+                Panel Administrador
+              </v-btn>
+              <v-btn color="#6B7A5F" rounded="pill" class="text-none font-weight-bold px-8" type="submit"
                 :loading="updating">
                 Guardar Cambios
               </v-btn>
-            </div>
+            </section>
           </v-form>
         </v-card>
       </v-col>
@@ -111,10 +115,8 @@ import { ref, reactive } from 'vue';
 import { useAuth } from '@/composables/useAuth';
 import MyInfoEvents from '@/components/MyInfoEvents.vue';
 
-// Extraemos datos y funciones del composable
 const { user, updateProfile, error } = useAuth();
 
-// Estados locales
 const updating = ref(false);
 const showSuccess = ref(false);
 const fileInput = ref<HTMLInputElement | null>(null);
@@ -122,7 +124,6 @@ const imagePreview = ref<string | null>(null);
 const selectedFile = ref<File | null | undefined>(null);
 const editMode = ref(true);
 
-// Formulario reactivo con datos actuales del usuario
 const form = reactive({
   name: user.value?.name || '',
   last_name: user.value?.last_name || '',
@@ -130,23 +131,19 @@ const form = reactive({
   phone: user.value?.phone || ''
 });
 
-// Función para abrir el selector de archivos
 const triggerFileInput = () => {
   fileInput.value?.click();
 };
 
-// Manejo de selección de imagen
 const onFileSelected = (e: Event) => {
   const target = e.target as HTMLInputElement;
   if (target.files && target.files[0]) {
     const file = target.files[0];
     selectedFile.value = file;
-    // Creamos una URL temporal para mostrar la previsualización
     imagePreview.value = URL.createObjectURL(file);
   }
 };
 
-// Envío del formulario
 const handleUpdate = async () => {
   updating.value = true;
   try {
@@ -170,6 +167,11 @@ const handleUpdate = async () => {
   } finally {
     updating.value = false;
   }
+};
+
+// Redirección al panel de administrador
+const goToAdminPanel = () => {
+  window.location.href = 'http://localhost:8000/';
 };
 </script>
 

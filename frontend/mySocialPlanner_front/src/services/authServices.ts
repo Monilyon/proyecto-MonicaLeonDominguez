@@ -4,7 +4,7 @@ import type { RegisterData } from '@/types/Register'
 
 function getCookie(name: string): string | null {
   const matches = document.cookie.match(
-    new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()\[\]\\\/\+^])/g, '\\$1') + '=([^;]*)'),
+    new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()[\]\\/+^])/g, '\\$1') + '=([^;]*)'),
   )
 
   if (!matches || !matches[1]) {

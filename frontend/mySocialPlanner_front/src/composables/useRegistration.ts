@@ -48,11 +48,34 @@ export function useRegistration() {
     }
   };
 
+  const cancelRegistration = async (registrationId: number) => {
+    if (!token.value) {
+      throw new Error('Debes iniciar sesión para cancelar la inscripción');
+    }
+
+    loading.value = true;
+    error.value = null;
+
+    try {
+      // Asumiendo que el status "Cancelada" tiene id 4
+      await registrationService.updateRegistrationStatus(registrationId, 4, token.value);
+      // Refrescar las inscripciones después de cancelar
+      await fetchRegistrations();
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Error al cancelar la inscripción';
+      error.value = message;
+      throw new Error(message);
+    } finally {
+      loading.value = false;
+    }
+  };
+
   return {
     registrations,
     loading,
     error,
     fetchRegistrations,
     registerEvent,
+    cancelRegistration,
   };
 }

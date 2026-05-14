@@ -5,11 +5,16 @@ use App\Models\Event;
 use App\Models\User;
 use App\Models\Registration;
 use App\Http\Controllers\EventController;
-use App\Http\Controllers\Api\RegistrationController;
+use App\Http\Controllers\RegistrationController;
+use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
+
+Route::get('/eventos', [EventController::class, 'index'])->name('events.index');
+Route::get('/usuarios', [UserController::class, 'index'])->name('users.index');
+Route::get('/solicitudes', [RegistrationController::class, 'index'])->name('registrations.index');
 
 // Redirige al login del frontend cuando el backend intenta usar la ruta login.
 Route::get('/login', function () {

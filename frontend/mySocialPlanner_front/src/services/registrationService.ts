@@ -1,6 +1,6 @@
 import type { MyRegistration } from '@/types/Registration';
 
-const API_BASE_URL = 'http://localhost:8000/api';
+const API_BASE_URL = '/api';
 
 const buildHeaders = (token?: string) => {
   const headers: Record<string, string> = {

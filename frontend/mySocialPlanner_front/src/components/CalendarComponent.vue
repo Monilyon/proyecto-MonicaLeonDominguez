@@ -11,7 +11,7 @@
           <v-col cols="12" md="11">
             <v-card class="pa-4 shadow-lg" rounded="xl" elevation="2" style="background-color: #d1d9c1;">
 
-              <v-toolbar flat color="brown-lighten-5" rounded="xl">
+              <v-toolbar flat color="brown-lighten-5" style="margin: 0;" rounded="xl">
                 <v-btn icon="mdi-chevron-left" @click="changeMonth(-1)"></v-btn>
                 <v-toolbar-title class="text-h5  text-capitalize font-weight-bold">
                   {{ formattedTitle }}
@@ -24,7 +24,7 @@
                 <v-btn icon="mdi-chevron-right" @click="changeMonth(1)"></v-btn>
               </v-toolbar>
 
-              <v-calendar v-model="calendarValue" :events="formattedEvents" view-mode="month"
+              <v-calendar v-model="calendarValue" locale="es" :events="formattedEvents" view-mode="month"
                 class="custom-calendar mt-2">
                 <template v-slot:event="{ event }">
                   <div :class="['event-block', event.colorClass]" @click.stop="openDetails(event.raw)">
@@ -59,18 +59,32 @@
                 <v-list-item prepend-icon="mdi-calendar-clock"
                   :title="formatFullDate(selectedEvent.date)"></v-list-item>
                 <v-list-item prepend-icon="mdi-account-group"
-                  :title="'Capacidad: ' + selectedEvent.capacity + ' personas'"></v-list-item>
+                  :title="formatCapacity(selectedEvent)"></v-list-item>
               </v-list>
 
               <v-row class="mt-4">
                 <v-col cols="12">
-                  <v-btn color="primary" block @click="showInterestForm" v-if="!formVisible">
+                  <v-alert
+                    v-if="isPastEvent"
+                    color="grey-lighten-2"
+                    icon="mdi-calendar-check"
+                    variant="flat"
+                    class="text-grey-darken-2"
+                  >
+                    Evento realizado
+                  </v-alert>
+                  <v-btn
+                    v-else-if="!formVisible"
+                    color="primary"
+                    block
+                    @click="showInterestForm"
+                  >
                     Estoy interesado
                   </v-btn>
                 </v-col>
               </v-row>
 
-              <div v-if="formVisible" class="mt-4">
+              <div v-if="formVisible && !isPastEvent" class="mt-4">
                 <v-form>
                   <v-row>
                     <v-col cols="12" sm="6">
@@ -93,7 +107,6 @@
                         </v-toolbar>
 
                         <v-card-text class="pa-6">
-                          <!-- SECCIÓN 1: PERMISOS DE IMAGEN -->
                           <div class="mb-6">
                             <div class="d-flex align-center mb-2">
                               <v-icon color="primary" class="mr-2">mdi-camera-account</v-icon>
@@ -132,22 +145,18 @@
 
                         <v-card-actions class="pa-4 bg-grey-lighten-4">
                           <v-spacer></v-spacer>
-                          <v-btn text="Cancelar"  @click="closeDialog" variant="plain" color="grey-darken-1"></v-btn>
-                          <v-card-actions class="justify-end pa-6" v-if="formVisible">
-                            <v-btn color="green-darken-1" :loading="registerLoading" :disabled="registerLoading"
+                          <v-btn text="Cancelar"  @click="dialogConfirm = false" variant="plain" color="grey-darken-1"></v-btn>
+                          <v-btn color="green-darken-1" :loading="registerLoading" :disabled="registerLoading"
                             @click="registerForSelectedEvent">
                             Inscribirse
                           </v-btn>
                         </v-card-actions>
-                      </v-card-actions>
                       </v-card>
                     </v-dialog>
                   </v-row>
                 </v-form>
               </div>
             </v-card-text>
-
-
           </v-card>
         </v-dialog>
 
@@ -168,7 +177,7 @@ import { EVENT_TYPE_COLORS } from '@/types/Event';
 import type { MyEvent } from '@/types/Event';
 import { useRoute } from 'vue-router';
 
-const { events, loading } = useEvents(null);
+const { events, loading, fetchEvents } = useEvents(null);
 const { user } = useAuth();
 const { registerEvent } = useRegistration();
 const route = useRoute();
@@ -182,6 +191,14 @@ const snackbar = ref(false);
 const snackbarMessage = ref('');
 const snackbarColor = ref('success');
 const dialogConfirm = ref(false);
+
+const isPastEvent = computed(() => {
+  if (!selectedEvent.value) return false;
+  const eventDate = new Date(selectedEvent.value.date);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return eventDate < today;
+});
 
 const categoryOptions = computed(() => {
   return Object.entries(EVENT_TYPE_COLORS).map(([id, config]) => ({
@@ -220,6 +237,12 @@ const formatFullDate = (dateStr: string) => {
   });
 };
 
+const formatCapacity = (event: MyEvent) => {
+  const registered = event.registrations_count ?? 0;
+  const available = Math.max(0, event.capacity - registered);
+  return `Plazas disponibles ${available} de ${event.capacity}`;
+};
+
 const changeMonth = (dir: number) => {
   const d = new Date(calendarValue.value);
   d.setMonth(d.getMonth() + dir);
@@ -241,6 +264,7 @@ const openDetails = (event: MyEvent) => {
 const closeDialog = () => {
   detailsDialog.value = false;
   formVisible.value = false;
+  dialogConfirm.value = false;
 };
 
 const showInterestForm = () => {
@@ -248,14 +272,11 @@ const showInterestForm = () => {
     showSnackbar('Debes iniciar sesión para mostrar el formulario.', 'error');
     return;
   }
-
   formVisible.value = true;
 };
 
 const registerForSelectedEvent = async () => {
-  if (!selectedEvent.value) {
-    return;
-  }
+  if (!selectedEvent.value || isPastEvent.value) return;
 
   if (!user.value) {
     showSnackbar('Debes iniciar sesión para inscribirte en este evento.', 'error');
@@ -266,8 +287,13 @@ const registerForSelectedEvent = async () => {
 
   try {
     await registerEvent(selectedEvent.value.id);
+    if (selectedEvent.value) {
+      selectedEvent.value.registrations_count = (selectedEvent.value.registrations_count ?? 0) + 1;
+    }
+    await fetchEvents();
     showSnackbar('Inscripción enviada correctamente. Revisa Mis eventos.', 'success');
     detailsDialog.value = false;
+    dialogConfirm.value = false;
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Error al inscribirse en el evento';
     showSnackbar(message, 'error');
@@ -275,6 +301,7 @@ const registerForSelectedEvent = async () => {
     registerLoading.value = false;
   }
 };
+// Función para verificar si hay un eventId en los parámetros de la URL y abrir el diálogo de detalles si es así
 const checkUrlParams = () => {
   const eventIdFromUrl = route.params.eventId;
 
@@ -283,16 +310,17 @@ const checkUrlParams = () => {
 
     if (eventToOpen) {
       openDetails(eventToOpen);
-
       calendarValue.value = new Date(eventToOpen.date);
     }
   }
 };
+
 watch(loading, (newLoading) => {
   if (!newLoading) {
     checkUrlParams();
   }
 });
+
 onMounted(() => {
   if (!loading.value) {
     checkUrlParams();

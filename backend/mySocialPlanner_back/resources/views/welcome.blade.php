@@ -59,10 +59,10 @@
 
             <div class="flex flex-row md:flex-row items-stretch md:items-start gap-3 py-6  w-full md:w-auto">
                 <a href="{{ url('/dashboard') }}" class="btn-mockup w-full md:w-auto">
-                    Ver eventos
+                   Ir al panel de administración
                 </a>
                 <a href="{{ url('/events/create') }}" class="btn-mockup w-full md:w-auto">
-                    Crear eventos
+                    Crear evento
                 </a>
             </div>
 

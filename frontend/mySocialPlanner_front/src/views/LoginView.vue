@@ -61,6 +61,7 @@
                 hide-details
                 :disabled="loading"
                 class="mb-6 custom-input"
+                placeholder="Ingresa tu contraseña"
               ></v-text-field>
 
               <!-- Botón con estado de carga -->

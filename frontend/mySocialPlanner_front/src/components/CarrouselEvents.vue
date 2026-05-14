@@ -7,9 +7,7 @@
           Próximos eventos.
         </h2>
         <p class="text-subtitle-1 mb-2 text-center" style="color: #2c3e2d;">
-          Descubre los próximos eventos que tenemos para ti. Desde conciertos y festivales hasta conferencias y
-          talleres, siempre hay algo emocionante por venir. ¡No te pierdas la oportunidad de participar en experiencias
-          inolvidables!
+          Descubre los próximos eventos que tenemos para ti. Siempre hay algo emocionante por venir.
         </p>
       </v-col>
 
@@ -29,7 +27,7 @@
                 <div class="text-white">
                   <div class="font-weight-bold">Tipo de evento: {{ event.name }}</div>
                   <div class="text-subtitle-2">Localización: {{ event.location }}</div>
-                  <div class="text-body-2">Fecha y hora: {{ event.date }}</div>
+                  <div class="text-body-2">Fecha: {{ formatDate(event.date) }}</div>
                 </div>
               </v-sheet>
             </v-carousel-item>
@@ -55,6 +53,15 @@ const router = useRouter();
 
 const goToEvent = (id: number) => {
   router.push({ name: 'Calendario', params: { eventId: id } });
+};
+const formatDate = (dateString: string) => {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  return date.toLocaleDateString('es-ES', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric'
+  });
 };
 </script>
 

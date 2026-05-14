@@ -37,10 +37,22 @@
           :color="statusColor"
           size="x-small"
           variant="flat"
-          class="text-uppercase font-weight-bold mb-6"
+          class="text-uppercase font-weight-bold mb-2"
         >
           {{ registration.status.name }}
         </v-chip>
+
+        <v-btn
+          v-if="canCancel"
+          size="x-small"
+          rounded
+          color="white"
+          @click="handleCancel"
+          :loading="cancelling"
+          style="font-weight: bolder;"
+        >
+          Anular inscripción
+        </v-btn>
 
         <div class="registration-date">
           Inscripción: {{ formatDate(registration.registration_date || registration.event.date) }}
@@ -51,17 +63,37 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import type { MyRegistration } from '@/types/Registration';
 import { EVENT_TYPE_COLORS } from '@/types/Event';
 
 const props = defineProps<{ registration: MyRegistration }>();
+const emit = defineEmits<{
+  cancel: [registrationId: number];
+}>();
+
+const cancelling = ref(false);
+
+const canCancel = computed(() => {
+  const statusName = props.registration.status.name.toLowerCase();
+  return !statusName.includes('cancelada') && !statusName.includes('rechazada');
+});
+
+const handleCancel = async () => {
+  cancelling.value = true;
+  try {
+    emit('cancel', props.registration.id);
+  } finally {
+    cancelling.value = false;
+  }
+};
 
 const statusColor = computed(() => {
   const statusName = props.registration.status.name.toLowerCase();
   if (statusName.includes('pendiente')) return 'orange-darken-2';
   if (statusName.includes('aprobada')) return 'green-darken-2';
   if (statusName.includes('rechazada')) return 'red-darken-2';
+  if (statusName.includes('cancelada')) return 'grey-darken-2';
   console.log(props.registration.status.name);
 
   return 'blue-darken-2';

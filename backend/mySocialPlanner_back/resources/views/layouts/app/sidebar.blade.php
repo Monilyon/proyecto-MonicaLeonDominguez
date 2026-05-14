@@ -44,23 +44,29 @@
 <body class="min-h-screen bg-main-custom m-0">
     <!-- <div class="flex w-full"> -->
     <div class="flex">
-        @php $hideSidebar = request()->routeIs('events.create') || request()->routeIs('events.index') || request()->routeIs('events.edit') || request()->is('events/create'); @endphp
+        @php
+        $hideSidebar = request()->routeIs('events.create')
+        || request()->routeIs('events.index')
+        || request()->routeIs('events.edit')
+        || request()->routeIs('users.index')
+        || request()->routeIs('registrations.index')
+        || request()->is('events/create');
+        @endphp
         @if(!$hideSidebar)
         <flux:sidebar collapsible="mobile" class="flex flex-col sidebar-custom border-e border-zinc-200">
             <flux:sidebar.header class="flex flex-col items-center pt-10">
                 <div class="w-24 h-24 mb-6 overflow-hidden flex items-center justify-center shadow-sm">
-                    <x-app-logo class="w-16 h-16" href="{{ route('dashboard') }}" />
-                    <!-- <flux:sidebar.collapse class=" cursor-pointer hover:bg-zinc-200/50 rounded-lg p-1"/> -->
+                    <x-app-logo class="w-50 h-50" href="{{ route('dashboard') }}" />
                 </div>
             </flux:sidebar.header>
 
             <flux:sidebar.nav class="px-4 mt-2">
                 <flux:sidebar.item icon="home" href="http://localhost:5173" class="btn-rounded-white">
-                    Home
+                    Ir a la página principal de usuarios
                 </flux:sidebar.item>
 
                 <flux:sidebar.item icon="arrow-left-start-on-rectangle" href="/" class="btn-rounded-white">
-                    Ir a página Usuario
+                    Ir al Inicio del panel administrador
                 </flux:sidebar.item>
 
             </flux:sidebar.nav>
@@ -92,8 +98,8 @@
                     @endif
                 </div>
 
-                <flux:sidebar.item icon="calendar" :href="route('events.index')" :current="request()->routeIs('events.index')" class="btn-rounded-green">
-                    Ver todos los eventos
+                <flux:sidebar.item icon="calendar" :href="route('events.index', ['scope' => 'upcoming'])" :current="request()->routeIs('events.index')" class="btn-rounded-green">
+                    Ver los eventos activos
                 </flux:sidebar.item>
             </div>
             <div class="w-full bg-white p-4 rounded-[2rem] border border-zinc-200 min-h-[250px] shadow-sm">
@@ -125,7 +131,7 @@
                                 @csrf
                                 @method('PUT')
                                 <input type="hidden" name="status_id" value="2" />
-                                 <button type="submit"
+                                <button type="submit"
                                     onclick="return confirm('¿Estás seguro de que deseas Aprobar esta solicitud?')"
                                     class="px-4 py-1.5 bg-white border border-green-200 text-green-600 hover:bg-green-50 text-sm font-medium rounded-md transition-colors">
                                     Aprobar

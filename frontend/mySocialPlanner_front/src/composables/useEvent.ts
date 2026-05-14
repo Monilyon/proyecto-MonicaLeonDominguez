@@ -12,18 +12,14 @@ export function useEvents(limit: number | null = 5) {
     loading.value = true;
     try {
       const data = await eventService.getNextEvents();
-      const hoy = new Date().setHours(0, 0, 0, 0);
-
+      let processedData = [...data];
       // Filtro para que no salgan eventos pasados.
-      let processedData = data.filter(event =>
-        event.date !== undefined && new Date(event.date).getTime() >= hoy
-      );
+     processedData = processedData.filter(event => event.date !== undefined);
 
       //Ordenar por fecha
       processedData.sort((a, b) => {
         return new Date(a.date!).getTime() - new Date(b.date!).getTime();
       });
-
       // Aqui se aplica el límite SOLO si se ha especificado uno
       if (limit !== null) {
         processedData = processedData.slice(0, limit);
